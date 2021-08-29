@@ -44,3 +44,7 @@ export enum BusProperties {
 	CompositeMode = "mode.Composite",
 	FadeTo = "FadeTo",
 }
+
+export enum RecorderProperties {
+	Load = "load",
+}

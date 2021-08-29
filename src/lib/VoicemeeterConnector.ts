@@ -3,7 +3,7 @@ import ffi from "ffi-napi";
 import refArray from "ref-array-napi";
 import DLLHandler from "./DLLHandler";
 import { Device, VMLibrary, VoiceMeeterTypes } from "../types/VoicemeeterTypes";
-import { BusProperties, StripProperties } from "./VoicemeeterConsts";
+import { BusProperties, RecorderProperties, StripProperties } from "./VoicemeeterConsts";
 /**
  * @ignore
  */
@@ -218,6 +218,23 @@ export default class Voicemeeter {
 	 */
 	public setBusParameter = (index: number, property: BusProperties, value: any) => {
 		return this.setParameter("Bus", index, property, value);
+	};
+
+	/**
+	 * Sets a parameter of the recorder.
+	 * @param  {RecorderProperties} property Propertyname which should be changed
+	 * @param  {any} value Property value
+	 */
+	public setRecorderParameter = (property: RecorderProperties, value: any): Promise<any> => {
+		if (!this.isConnected) {
+			throw new Error("Not connected ");
+		}
+		const scriptString = `Recorder.${property}=${value};`;
+		const script = Buffer.alloc(scriptString.length + 1);
+		script.fill(0);
+		script.write(scriptString);
+		libVM.VBVMR_SetParameters(script);
+		return new Promise((resolve) => setTimeout(resolve, 200));
 	};
 
 	/**
